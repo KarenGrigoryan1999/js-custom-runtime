@@ -1,7 +1,0 @@
-﻿  Functions.cpp
-C:\Users\Karen\source\repos\vs-runtime\vs-runtime\Functions.h(4,10): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
-C:\Users\Karen\source\repos\vs-runtime\vs-runtime\Functions.h(5,10): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
-C:\Users\Karen\source\repos\vs-runtime\vs-runtime\Functions.h(6,10): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
-C:\Users\Karen\source\repos\vs-runtime\vs-runtime\Functions.h(7,10): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
-C:\Users\Karen\source\repos\vs-runtime\vs-runtime\Functions.cpp(14,20): warning C4018: <: несоответствие типов со знаком и без знака
-  vs-runtime.vcxproj -> C:\Users\Karen\source\repos\vs-runtime\Debug\vs-runtime.exe
