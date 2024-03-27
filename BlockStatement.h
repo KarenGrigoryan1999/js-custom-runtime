@@ -1,5 +1,5 @@
-#ifndef STATEMENT_STATEMENT_H
-#define STATEMENT_STATEMENT_H
+#ifndef BLOCK_STATEMENT_H
+#define BLOCK_STATEMENT_H
 
 #include <vector>
 #include "string"
