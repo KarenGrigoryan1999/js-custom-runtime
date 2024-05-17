@@ -18,13 +18,22 @@
 #include "BooleanExpression.h"
 #include "BlockStatement.h"
 #include "IncrementExpression.h"
-#include "FunctionExpression.h"
-#include "DefineFunctionExpression.h"
+#include "CallExpression.h"
+#include "FunctionDeclaration.h"
 #include "ReturnExpression.h"
+#include "Environment.h"
+#include "BlockStatement.h"
+#include "FunctionBodyStatement.h"
+#include "ObjectExpression.h"
+#include "DotExpression.h"
+#include "NumberType.h"
+#include "ThisExpression.h"
+#include "NewExpression.h"
+#include "NullExpression.h"
 
 using namespace std;
 
-BlockStatement* Parser::current_block = NULL;
+Environment* Parser::current_block = NULL;
 
 Parser::Parser(vector<Token>* lexems) {
 	this->lexems = lexems;
@@ -44,15 +53,15 @@ Node* Parser::parse() {
 }
 
 Node* Parser::block_statement() {
-	if (this->match(L_BLOCK)) {
+	if (this->match(L_BLOCK) && this->get(1)->type != COLON) {
 		BlockStatement* statement = new BlockStatement(Parser::current_block);
-		Parser::current_block = statement;
+		Parser::current_block = statement->env;
 
 		while (!this->match(R_BLOCK)) {
 			statement->add(this->block_statement());
 		}
 
-		Parser::set_current_block(Parser::current_block->prev);
+		Parser::set_current_block(Parser::current_block->outer);
 
 		return statement;
 	}
@@ -60,16 +69,16 @@ Node* Parser::block_statement() {
 	return this->kus_statement();
 }
 
-BlockStatement* Parser::func_body_statement() {
-	if (this->match(L_BLOCK)) {
-		BlockStatement* statement = new BlockStatement(Parser::current_block, true);
-		Parser::current_block = statement;
+FunctionBodyStatement* Parser::func_body_statement() {
+	if (this->match(L_BLOCK) && this->get(1)->type != COLON) {
+		FunctionBodyStatement* statement = new FunctionBodyStatement(Parser::current_block);
+		Parser::current_block = statement->env;
 
 		while (!this->match(R_BLOCK)) {
 			statement->add(this->block_statement());
 		}
 
-		Parser::set_current_block(Parser::current_block->prev);
+		Parser::set_current_block(Parser::current_block->outer);
 
 		return statement;
 	}
@@ -97,35 +106,53 @@ Node* Parser::kus_statement() {
 
 Node* Parser::variable_statement() {
 	bool is_const = false;
+	bool is_declaration = false;
 	if (this->get(0)->type == ONE_WORD && (this->get(0)->value == "const")) {
 		is_const = true;
+		is_declaration = true;
 		this->match(ONE_WORD);
 	}
 	if (this->get(0)->value == "let") {
-		this->match(ONE_WORD);//Временно пропускаем ключевые слова const и let
+		is_declaration = true;
+		this->match(ONE_WORD);
 	}
-	if (this->get(0)->type == ONE_WORD && this->get(1)->type == EQUAL) {
+	if (this->get(0)->type == FUNCTION && this->get(1)->type == ONE_WORD) {
+		string var_name = this->get(1)->value;
+		this->match(FUNCTION);
+		this->match(ONE_WORD);
+		FunctionDeclaration* func = new FunctionDeclaration(var_name, Parser::current_block, is_const);
+
+		int args_length = 0;
+
+		this->match(L_BRACKET);
+
+		while (!this->match(R_BRACKET))
+		{
+			func->function->add(this->get(0)->value);
+			this->consume(ONE_WORD);
+			this->match(COMMA);
+			args_length += 1;
+		}
+
+		func->function->add_property("length", {
+			new NumberType(args_length),
+			PropertyDescriptorState::TURNED_ON,
+			PropertyDescriptorState::TURNED_ON,
+			PropertyDescriptorState::TURNED_ON
+		});
+
+		FunctionBodyStatement* block = this->func_body_statement();
+
+		func->function->setBody(block);
+
+		return func;
+	}
+	else if (this->get(0)->type == ONE_WORD && this->get(1)->type == EQUAL) {
 		string var_name = this->get(0)->value;
 		this->match(ONE_WORD);
 		this->match(EQUAL);
-		if (this->match(FUNCTION)) {
-			DefineFunctionExpression* func = new DefineFunctionExpression(var_name, Parser::current_block, is_const);
-			this->match(L_BRACKET);
 
-			while (!this->match(R_BRACKET))
-			{
-				func->add(this->get(0)->value);
-				this->consume(ONE_WORD);
-				this->match(COMMA);
-			}
-
-			BlockStatement* block = this->func_body_statement();
-
-			func->setBody(block);
-
-			return func;
-		}
-		return new VariableStatement(var_name, is_const, Parser::current_block, this->evaluate_expression());
+		return new VariableStatement(var_name, Parser::current_block, (Expression*)this->variable_statement(), is_const, is_declaration);
 	}
 	return this->evaluate_expression();
 }
@@ -155,14 +182,31 @@ Node* Parser::for_statement() {
 }
 
 Expression* Parser::evaluate_expression() {
+	return this->object_expression();
+}
+
+Expression* Parser::object_expression() {
+	if (this->match(L_BLOCK)) {
+		ObjectExpression* object = new ObjectExpression(false);
+		while (!this->match(R_BLOCK)) {
+			string key = this->get(0)->value;
+			this->match(ONE_WORD);
+			this->match(COLON);
+			object->add_property(key, this->evaluate_expression());
+			this->match(COMMA);
+		}
+
+		return object;
+	}
+
 	return this->orLogical();
 }
 
 Expression* Parser::orLogical() {
 	Expression* first = this->andLogical();
 	while (true) {
-		if (this->match(OR_OP)) {
-			first = new LogicalExpression(OR_OP, first, this->andLogical());
+		if (this->match(BITWISE_OR_EXPRESSION)) {
+			first = new LogicalExpression(BITWISE_OR_EXPRESSION, first, this->andLogical());
 			continue;
 		}
 		break;
@@ -174,8 +218,8 @@ Expression* Parser::orLogical() {
 Expression* Parser::andLogical() {
 	Expression* first = this->logical();
 	while (true) {
-		if (this->match(AND_OP)) {
-			first = new LogicalExpression(AND_OP, first, this->logical());
+		if (this->match(LOGICAL_AND_EXPRESSION)) {
+			first = new LogicalExpression(LOGICAL_AND_EXPRESSION, first, this->logical());
 			continue;
 		}
 		break;
@@ -245,15 +289,15 @@ Expression* Parser::additive() {
 }
 
 Expression* Parser::complexity() {
-	Expression* first = this->increment_expression();
+	Expression* first = this->new_expression();
 
 	while (true) {
 		if (this->match(STAR)) {
-			first = new BinaryExpression(STAR, first, this->increment_expression());
+			first = new BinaryExpression(STAR, first, this->new_expression());
 			continue;
 		}
 		if (this->match(DIV)) {
-			first = new BinaryExpression(DIV, first, this->increment_expression());
+			first = new BinaryExpression(DIV, first, this->new_expression());
 			continue;
 		}
 		break;
@@ -262,8 +306,38 @@ Expression* Parser::complexity() {
 	return first;
 }
 
+Expression* Parser::new_expression() {
+	if (this->match(NEW_OPERATOR)) {
+		return new NewExpression(this->increment_expression());
+	}
+
+	return this->increment_expression();
+}
+
+Expression* Parser::get_property_from_object(Expression* current) {
+	Expression* prev_exp = NULL;
+	while (true) {
+		if (this->match(DOT_OP)) {
+			prev_exp = current;
+			current = new DotExpression(current, this->get(0)->value);
+			this->match(ONE_WORD);
+			continue;
+		}
+		break;
+	}
+	if (this->match(L_BRACKET)) {
+		return this->method_expression(current, prev_exp);
+	}
+	if (this->match(EQUAL)) {
+		//Если обнаруживаем знак равенства, то выполняем запись в property объекта
+		((DotExpression*)current)->set_expression_to_write(this->evaluate_expression());
+	}
+
+	return current;
+}
+
 Expression* Parser::function_expression() {
-	FunctionExpression* func = new FunctionExpression(this->get(0)->value, Parser::current_block);
+	CallExpression* func = new CallExpression(this->get(0)->value, Parser::current_block);
 	this->match(ONE_WORD);
 	this->match(L_BRACKET);
 
@@ -275,15 +349,24 @@ Expression* Parser::function_expression() {
 	return func;
 }
 
-Expression* Parser::increment_expression() {
-	Expression* result = NULL;
-	token_t next_token_type = this->get(1)->type;
-	if (this->get(0)->type == ONE_WORD && (next_token_type == INCREMENT || next_token_type == DECREMENT)) {
-		result = new IncrementExpression('r', next_token_type, this->unary(), this->get(0)->value, Parser::current_block);
-		this->match(this->get(0)->type);
+Expression* Parser::method_expression(Expression* exp, Expression* obj_exp) {
+	CallExpression* func = new CallExpression(exp, Parser::current_block);
+	func->set_this_object(obj_exp);
+
+	while (!this->match(R_BRACKET)) {
+		this->match(COMMA);
+		func->add(this->evaluate_expression());
 	}
 
-	if (result == NULL) return this->unary();
+	return func;
+}
+
+Expression* Parser::increment_expression() {
+	string token_type = this->get(0)->value;
+	Expression* result = this->unary();
+	if (this->match(INCREMENT) || this->match(DECREMENT)) {
+		return new IncrementExpression('r', INCREMENT, result, token_type, Parser::current_block);
+	}
 
 	return result;
 }
@@ -308,11 +391,50 @@ Expression* Parser::primary() {
 		NumberExpression* exp = new NumberExpression(current->value);
 		return exp;
 	}
+	if (current->type == FUNCTION && this->get(1)->type == L_BRACKET) {
+		this->match(FUNCTION);
+		this->match(L_BRACKET);
+
+		AnonumousFuncExpression* func = new AnonumousFuncExpression(Parser::current_block);
+		
+		int args_length = 0;
+
+		while (!this->match(R_BRACKET))
+		{
+			func->add(this->get(0)->value);
+			args_length += 1;
+			this->consume(ONE_WORD);
+			this->match(COMMA);
+		}
+
+		func->add_property("length", {
+			new NumberType(args_length),
+			PropertyDescriptorState::TURNED_ON,
+			PropertyDescriptorState::TURNED_ON,
+			PropertyDescriptorState::TURNED_ON
+		});
+
+		FunctionBodyStatement* block = this->func_body_statement();
+
+		func->setBody(block);
+
+		return func;
+	}
 	if (this->match(NAN_EXPRESSION)) {
 		return new NanExpression();
 	}
+	if (this->match(THIS_KEYWORD)) {
+		Expression* exp = new ThisExpression();
+		if (this->get(0)->type != DOT_OP)
+			return exp;
+		else
+			return this->get_property_from_object(exp);
+	}
 	if (this->match(UNDEFINED_EXPRESSION)) {
 		return new UndefinedExpression();
+	}
+	if (this->match(NULL_EXPRESSION)) {
+		return new NullExpression();
 	}
 	if (this->match(PLAIN_TEXT)) {
 		StringExpression* exp = new StringExpression(current->value);
@@ -323,11 +445,20 @@ Expression* Parser::primary() {
 	}
 	if (this->match(ONE_WORD)) {
 		VariableExpression* exp = new VariableExpression(current->value, Parser::current_block);
-		return exp;
+		if (this->get(0)->type != DOT_OP) {//Если после слова не стоит точка, то делаем вывод что мы имем дело с переменной
+			return exp;
+		}
+		else {
+			//Если после слова точка, то, вероятно мы достаем свойство из объекта
+			return this->get_property_from_object(exp);
+		}
 	}
 	if (this->match(L_BRACKET)) {
 		Expression* result = this->evaluate_expression();
 		if (this->match(R_BRACKET)) return result;
+		else {
+			throw string("Uncaught SyntaxError: missing ) after argument list");
+		}
 	}
 	if (this->match(BOOLEAN_ELEMENT)) {
 		BooleanExpression* exp = new BooleanExpression(current->value);
@@ -344,7 +475,7 @@ Expression* Parser::primary() {
 		return exp;
 	}
 
-	throw "Unknown token exception";
+	throw string("Unknown token exception ") + current->value;
 }
 
 bool Parser::match(token_t token_type) {
@@ -356,7 +487,7 @@ bool Parser::match(token_t token_type) {
 
 bool Parser::consume(token_t token_type) {
 	Token* t = this->get(0);
-	if (t->type != token_type) throw "Uncaught token";
+	if (t->type != token_type) throw string("Uncaught token ") + t->value;
 	this->pos += 1;
 	return true;
 }
@@ -365,6 +496,6 @@ Token* Parser::get(int position) {
 	return &this->lexems->at(position+pos);
 }
 
-void Parser::set_current_block(BlockStatement* block){
+void Parser::set_current_block(Environment* block){
 	Parser::current_block = block;
 }

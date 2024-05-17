@@ -47,8 +47,20 @@ vector<Token>* Lexer::tokenize() {
 		else if (symbol == '{') {
 			this->tokenize_math_operator(token_t::L_BLOCK);
 		}
+		else if (symbol == ':') {
+			this->tokenize_math_operator(token_t::COLON);
+		}
+		else if (symbol == '[') {
+			this->tokenize_math_operator(token_t::SQ_BRACKET_L);
+		}
+		else if (symbol == ']') {
+			this->tokenize_math_operator(token_t::SQ_BRACKET_R);
+		}
 		else if (symbol == '}') {
 			this->tokenize_math_operator(token_t::R_BLOCK);
+		}
+		else if (symbol == '.') {
+			this->tokenize_math_operator(token_t::DOT_OP);
 		}
 		else if (symbol == '=') {
 			this->equal_operator();
@@ -71,7 +83,7 @@ vector<Token>* Lexer::tokenize() {
 		else if(std::isdigit(symbol)) {
 			this->tokenize_numeric(token_t::NUMBER);
 		}
-		else if (isalpha(symbol)) {
+		else if (isalpha(symbol) || symbol == '_') {
 			this->tokenize_word(token_t::ONE_WORD);
 		}
 		else {
@@ -187,10 +199,10 @@ void Lexer::tokenize_amp_operator() {
 	this->tokenize_temp += symbol;
 	this->next();
 	if (this->tokenize_temp == "&&") {
-		this->base_tokenize(AND_OP);
+		this->base_tokenize(LOGICAL_AND_EXPRESSION);
 		this->next();
 	} else {
-		this->base_tokenize(AND_OP);
+		this->base_tokenize(LOGICAL_AND_EXPRESSION);
 	}
 	this->tokenize_temp = "";
 }
@@ -201,11 +213,11 @@ void Lexer::tokenize_or_operator() {
 	this->tokenize_temp += symbol;
 	this->next();
 	if (this->tokenize_temp == "||") {
-		this->base_tokenize(OR_OP);
+		this->base_tokenize(BITWISE_OR_EXPRESSION);
 		this->next();
 	}
 	else {
-		this->base_tokenize(OR_OP);
+		this->base_tokenize(BITWISE_OR_EXPRESSION);
 	}
 	this->tokenize_temp = "";
 }
@@ -274,6 +286,15 @@ void Lexer::tokenize_word(token_t type) {
 	}
 	else if (this->tokenize_temp == "undefined") {
 		this->tokenize_math_operator(UNDEFINED_EXPRESSION);
+	}
+	else if (this->tokenize_temp == "null") {
+		this->tokenize_math_operator(NULL_EXPRESSION);
+	}
+	else if (this->tokenize_temp == "this") {
+		this->base_tokenize(THIS_KEYWORD);
+	}
+	else if (this->tokenize_temp == "new") {
+		this->base_tokenize(NEW_OPERATOR);
 	}
 	else if (this->tokenize_temp == "return") {
 		this->tokenize_math_operator(RETURN);

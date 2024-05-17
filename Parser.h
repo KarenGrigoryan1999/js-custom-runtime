@@ -7,6 +7,7 @@
 #include "Node.h"
 #include "Expression.h"
 #include "BlockStatement.h"
+#include "FunctionBodyStatement.h"
 
 using namespace std;
 
@@ -25,6 +26,7 @@ public:
 	Expression* andLogical();
 	Expression* orLogical();
 	Expression* complexity();
+	Expression* get_property_from_object(Expression* current);
 	Expression* function_expression();
 	Node* evaluate_statement();
 	Node* kus_statement();
@@ -32,16 +34,18 @@ public:
 	Node* if_else_statement();
 	Node* for_statement();
 	Node* block_statement();
-	BlockStatement* func_body_statement();
+	FunctionBodyStatement* func_body_statement();
 	Expression* evaluate_expression();
+	Expression* object_expression();
 	Expression* unary();
 	Expression* primary();
-
+	Expression* method_expression(Expression* exp, Expression* obj_exp);
 	Expression* increment_expression();
+	Expression* new_expression();
 
-	static void set_current_block(BlockStatement* block);
+	static void set_current_block(Environment* block);
 private:
-	static BlockStatement* current_block;
+	static Environment* current_block;
 };
 
 #endif

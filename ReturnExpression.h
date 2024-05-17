@@ -14,9 +14,10 @@ class ReturnExpression : public Expression
 {
 public:
 	ReturnExpression(Expression* exp);
+	ReturnExpression();
 	BaseValue* eval() override;
 	BaseValue* get_result();
-private:
+protected:
 	Expression* exp;
 	BaseValue* result;
 };

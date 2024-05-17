@@ -20,34 +20,18 @@ BaseValue* LogicalExpression::eval() {
 	BaseValue* operand1 = exp1->eval();
 	BaseValue* operand2 = exp2->eval();
 
-	if (this->op == AND_OP) {
-		if (operand1->get_as_boolean() == false && operand2->get_as_boolean() == false) {
+	if (this->op == LOGICAL_AND_EXPRESSION) {
+		if (operand1->get_as_boolean() == false) {
 			return operand1;
 		}
-		if (operand1->get_as_boolean() == true && operand2->get_as_boolean() == false) {
-			return operand2;
-		}
-		if (operand1->get_as_boolean() == false && operand2->get_as_boolean() == true) {
-			return operand1;
-		}
-		if (operand1->get_as_boolean() == true && operand2->get_as_boolean() == true) {
-			return operand2;
-		}
+		return operand2;
 	}
 
-	if (this->op == OR_OP) {
-		if (operand1->get_as_boolean() == false && operand2->get_as_boolean() == false) {
-			return operand2;
-		}
-		if (operand1->get_as_boolean() == true && operand2->get_as_boolean() == false) {
+	if (this->op == BITWISE_OR_EXPRESSION) {
+		if (operand1->get_as_boolean() == true) {
 			return operand1;
 		}
-		if (operand1->get_as_boolean() == false && operand2->get_as_boolean() == true) {
-			return operand2;
-		}
-		if (operand1->get_as_boolean() == true && operand2->get_as_boolean() == true) {
-			return operand1;
-		}
+		return operand2;
 	}
 
 	if (operand1->get_type() == NAN_TYPE || operand2->get_type() == NAN_TYPE) return FalseVariant;
@@ -98,3 +82,8 @@ BaseValue* LogicalExpression::eval() {
 		return FalseVariant;
 	}
 }
+
+struct Environment {
+	vector<BaseValue*>* record;
+	Environment* outer;
+};
