@@ -1,27 +1,15 @@
 #ifndef BLOCK_STATEMENT_H
 #define BLOCK_STATEMENT_H
 
-#include <vector>
-#include "string"
-#include "Statement.h"
-#include "Expression.h"
-#include "Variables.h"
+#include "Environment.h"
+#include "BlockBaseStatement.h"
 
 using namespace std;
 
-class BlockStatement : public Statement
+class BlockStatement : public BlockBaseStatement
 {
 public:
-	BlockStatement(BlockStatement* statement, bool is_func_body);
-	BlockStatement(BlockStatement* statement);
-	void add(Node* statement);
-	BaseValue* eval() override;
-	Variables* local_env;
-	BlockStatement* prev;
-	void refresh_env();
-private:
-	vector<Node*> statements;
-	bool is_func_body = false;
+	BlockStatement(Environment* statement) : BlockBaseStatement(statement) {};
 };
 
 #endif

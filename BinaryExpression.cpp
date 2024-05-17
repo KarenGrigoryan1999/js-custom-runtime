@@ -4,6 +4,7 @@
 #include "StringType.h"
 #include "TokenType.h"
 #include "NanType.h"
+#include "ObjectExpression.h"
 
 using namespace std;
 

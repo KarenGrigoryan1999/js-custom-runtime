@@ -6,21 +6,22 @@
 
 using namespace std;
 
-class DefineFunctionExpression;
+class ObjectExpression;
 class BaseValue
 {
 public:
 	BaseValue(string data, variable_t type);
-	BaseValue(DefineFunctionExpression* exp);
-	string get_as_string();
-	double get_as_number();
-	bool get_as_boolean();
+	BaseValue(ObjectExpression* exp, variable_t type);
+	BaseValue(ObjectExpression* exp);
+	virtual string get_as_string();
+	virtual double get_as_number();
+	virtual bool get_as_boolean();
 	variable_t get_type();
-	DefineFunctionExpression* get_ref();
+	virtual ObjectExpression* get_ref();
 protected:
 	string data;
 	variable_t type;
-	DefineFunctionExpression* ref;
+	ObjectExpression* ref;
 };
 
 #endif
