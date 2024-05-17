@@ -13,12 +13,13 @@ using namespace std;
 class VariableStatement : public Statement
 {
 public:
-	VariableStatement(string name, bool is_struct, BlockStatement* block, Expression* exp);
+	VariableStatement(string name, Environment* block, Expression* exp, bool is_const, bool is_declaration);
 	BaseValue* eval() override;
 private:
 	string name;
-	bool is_struct;
-	BlockStatement* block;
+	bool is_const;
+	bool is_declaration;
+	Environment* block;
 	Expression* exp;
 };
 

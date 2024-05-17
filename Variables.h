@@ -6,8 +6,6 @@
 #include <stack>
 #include "BaseValue.h"
 
-#define MAXIMUM_CALLSTACK 100
-
 using namespace std;
 
 class Variables
@@ -21,13 +19,9 @@ public:
 	static map<string, var_t> var_record;
 	BaseValue* get_local(string name);
 	static BaseValue* get(string name);
-	static stack<Variables*> context_stack;
-	static void push(Variables* env);
-	static Variables* top();
-	static void pop();
-	static int size();
 	void set_local(string name, BaseValue* data, bool is_const);
 	static void set(string name, BaseValue* data, bool is_const);
+	static void setupDefaultPrototypes();
 };
 
 #endif

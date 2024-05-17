@@ -12,11 +12,11 @@ using namespace std;
 class VariableExpression : public Expression
 {
 public:
-	VariableExpression(string name, BlockStatement* block);
+	VariableExpression(string name, Environment* block);
 	BaseValue* eval() override;
 private:
 	string name;
-	BlockStatement* block;
+	Environment* block;
 };
 
 #endif

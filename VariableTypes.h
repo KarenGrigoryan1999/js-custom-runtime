@@ -1,6 +1,7 @@
 #pragma once
 typedef enum
 {
+	TDZ,
 	STRING_TYPE,
 	NUMBER_TYPE,
 	BOOL_TYPE,
@@ -9,4 +10,6 @@ typedef enum
 	NULL_TYPE,
 
 	FUNCTION_TYPE,
+	OBJECT_TYPE,
+	EXOTIC_OBJECT_TYPE,
 } variable_t;

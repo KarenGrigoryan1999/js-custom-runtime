@@ -2,24 +2,25 @@
 #include "VariableExpression.h"
 #include "Token.h"
 #include "Variables.h"
+#include "ContextStack.h"
 
 using namespace std;
 
-VariableExpression::VariableExpression(string name, BlockStatement* block) {
+VariableExpression::VariableExpression(string name, Environment* block) {
 	this->name = name;
 	this->block = block;
 }
 
 BaseValue* VariableExpression::eval() {
 	if (this->block != NULL) {
-		BlockStatement* current = this->block;
-
-		while (current != NULL) {
+		Environment* current = this->block;
+		
+		while (current != NULL && current->records != NULL) {
 			try {
-				return current->local_env->get_local(this->name);
+				return current->records->get_local(name);
 			}
-			catch (const char* error_message) {
-				current = current->prev;
+			catch (string error_message) {
+				current = current->outer;
 			}
 		}
 	}

@@ -12,6 +12,9 @@ using namespace std;
 int main()
 {
     setlocale(LC_ALL, "rus");
+
+    Variables::setupDefaultPrototypes();
+
     ifstream file("C:\\Users\\Karen\\Desktop\\program.vs");
 
     if (!file.is_open()) {
@@ -34,7 +37,7 @@ int main()
         Node* program = ASTGenerator->parse();
         program->eval();
     }
-    catch (const char* msg) {
+    catch (string msg) {
         cout << msg;
     }
 }
