@@ -15,6 +15,7 @@ class VariableStatement : public Statement
 public:
 	VariableStatement(string name, Environment* block, Expression* exp, bool is_const, bool is_declaration);
 	BaseValue* eval() override;
+	const char* plain_name = "VariableStatement";
 private:
 	string name;
 	bool is_const;

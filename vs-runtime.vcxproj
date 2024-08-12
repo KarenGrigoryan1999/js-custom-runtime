@@ -116,10 +116,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\libuv\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libuv.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\libuv\lib;C:\libuv;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -140,16 +143,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AnonumousFuncExpression.cpp" />
+    <ClCompile Include="BaseException.cpp" />
     <ClCompile Include="BinaryExpression.cpp" />
     <ClCompile Include="BlockBaseStatement.cpp" />
     <ClCompile Include="BlockStatement.cpp" />
     <ClCompile Include="BooleanExpression.cpp" />
     <ClCompile Include="BoolType.cpp" />
+    <ClCompile Include="CollectableEntity.cpp" />
     <ClCompile Include="ContextStack.cpp" />
     <ClCompile Include="DotExpression.cpp" />
     <ClCompile Include="EmptyExpression.cpp" />
     <ClCompile Include="Errors.cpp" />
+    <ClCompile Include="EventLoop.cpp" />
     <ClCompile Include="ExecutionContext.cpp" />
+    <ClCompile Include="GarbigeCollector.cpp" />
+    <ClCompile Include="JobQueue.cpp" />
     <ClCompile Include="NullExpression.cpp" />
     <ClCompile Include="NullType.cpp" />
     <ClCompile Include="ObjectPropertyDescriptorState.cpp" />
@@ -162,7 +170,11 @@
     <ClCompile Include="Functions.cpp" />
     <ClCompile Include="IfStatement.cpp" />
     <ClCompile Include="IncrementExpression.cpp" />
-    <ClCompile Include="KusStatement.cpp" />
+    <ClCompile Include="Program.cpp" />
+    <ClCompile Include="ReferenceError.cpp" />
+    <ClCompile Include="SyntaxError.cpp" />
+    <ClCompile Include="TypeError.cpp" />
+    <ClCompile Include="TypeofExpression.cpp" />
     <ClCompile Include="Lexer.cpp" />
     <ClCompile Include="LogicalExpression.cpp" />
     <ClCompile Include="NanExpression.cpp" />
@@ -191,20 +203,28 @@
     <ClCompile Include="Variables.cpp" />
     <ClCompile Include="VariableStatement.cpp" />
     <ClCompile Include="vs-runtime.cpp" />
+    <ClCompile Include="WhileStatement.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnonumousFuncExpression.h" />
+    <ClInclude Include="BaseException.h" />
     <ClInclude Include="BinaryExpression.h" />
     <ClInclude Include="BlockBaseStatement.h" />
     <ClInclude Include="BlockStatement.h" />
     <ClInclude Include="BooleanExpression.h" />
     <ClInclude Include="BoolType.h" />
+    <ClInclude Include="CollectableEntity.h" />
     <ClInclude Include="ContextStack.h" />
     <ClInclude Include="DotExpression.h" />
     <ClInclude Include="EmptyExpression.h" />
     <ClInclude Include="Errors.h" />
+    <ClInclude Include="EventLoop.h" />
     <ClInclude Include="exceptionTypes.h" />
     <ClInclude Include="ExecutionContext.h" />
+    <ClInclude Include="GarbigeCollector.h" />
+    <ClInclude Include="GCItem.h" />
+    <ClInclude Include="HiddenProperties.h" />
+    <ClInclude Include="JobQueue.h" />
     <ClInclude Include="NullExpression.h" />
     <ClInclude Include="NullType.h" />
     <ClInclude Include="ObjectPropertyDescriptorState.h" />
@@ -217,7 +237,13 @@
     <ClInclude Include="Functions.h" />
     <ClInclude Include="IfStatement.h" />
     <ClInclude Include="IncrementExpression.h" />
-    <ClInclude Include="KusStatement.h" />
+    <ClInclude Include="Program.h" />
+    <ClInclude Include="ReferenceError.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="SyntaxError.h" />
+    <ClInclude Include="TimeoutItem.h" />
+    <ClInclude Include="TypeError.h" />
+    <ClInclude Include="TypeofExpression.h" />
     <ClInclude Include="Lexer.h" />
     <ClInclude Include="LogicalExpression.h" />
     <ClInclude Include="NanExpression.h" />
@@ -248,6 +274,13 @@
     <ClInclude Include="Variables.h" />
     <ClInclude Include="VariableStatement.h" />
     <ClInclude Include="VariableTypes.h" />
+    <ClInclude Include="WhileStatement.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\..\..\..\Program Files (x86)\libuv\libuv.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="vs-runtime.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

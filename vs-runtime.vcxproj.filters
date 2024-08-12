@@ -55,6 +55,18 @@
     <Filter Include="Файлы заголовков\exceptions">
       <UniqueIdentifier>{947318f7-0cbe-460a-acf3-ea0e8f1dd695}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Исходные файлы\GC">
+      <UniqueIdentifier>{fa26e9a5-e57d-4ebc-97b3-65e13d5d9053}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\GC">
+      <UniqueIdentifier>{943f3083-db1f-41cc-885b-8f8c8873b92a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\eventloop">
+      <UniqueIdentifier>{a11a2459-9a0f-4a72-a31f-756cfd77ec18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\eventloop">
+      <UniqueIdentifier>{9ef12388-e785-4449-bda8-69865e7fcb6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="vs-runtime.cpp">
@@ -92,9 +104,6 @@
     </ClCompile>
     <ClCompile Include="NumberExpression.cpp">
       <Filter>Исходные файлы\expressions</Filter>
-    </ClCompile>
-    <ClCompile Include="KusStatement.cpp">
-      <Filter>Исходные файлы\statements</Filter>
     </ClCompile>
     <ClCompile Include="Statement.cpp">
       <Filter>Исходные файлы\statements</Filter>
@@ -213,6 +222,39 @@
     <ClCompile Include="Errors.cpp">
       <Filter>Исходные файлы\exceptions</Filter>
     </ClCompile>
+    <ClCompile Include="WhileStatement.cpp">
+      <Filter>Исходные файлы\statements</Filter>
+    </ClCompile>
+    <ClCompile Include="TypeofExpression.cpp">
+      <Filter>Исходные файлы\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="GarbigeCollector.cpp">
+      <Filter>Исходные файлы\GC</Filter>
+    </ClCompile>
+    <ClCompile Include="CollectableEntity.cpp">
+      <Filter>Исходные файлы\GC</Filter>
+    </ClCompile>
+    <ClCompile Include="JobQueue.cpp">
+      <Filter>Исходные файлы\vitalStructures</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseException.cpp">
+      <Filter>Исходные файлы\exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="ReferenceError.cpp">
+      <Filter>Исходные файлы\exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="SyntaxError.cpp">
+      <Filter>Исходные файлы\exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="TypeError.cpp">
+      <Filter>Исходные файлы\exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="EventLoop.cpp">
+      <Filter>Исходные файлы\eventloop</Filter>
+    </ClCompile>
+    <ClCompile Include="Program.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Lexer.h">
@@ -252,9 +294,6 @@
       <Filter>Файлы заголовков\expressions</Filter>
     </ClInclude>
     <ClInclude Include="VariableStatement.h">
-      <Filter>Файлы заголовков\statements</Filter>
-    </ClInclude>
-    <ClInclude Include="KusStatement.h">
       <Filter>Файлы заголовков\statements</Filter>
     </ClInclude>
     <ClInclude Include="Statement.h">
@@ -380,5 +419,58 @@
     <ClInclude Include="exceptionTypes.h">
       <Filter>Файлы заголовков\exceptions</Filter>
     </ClInclude>
+    <ClInclude Include="WhileStatement.h">
+      <Filter>Файлы заголовков\statements</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeofExpression.h">
+      <Filter>Файлы заголовков\expressions</Filter>
+    </ClInclude>
+    <ClInclude Include="GarbigeCollector.h">
+      <Filter>Файлы заголовков\GC</Filter>
+    </ClInclude>
+    <ClInclude Include="CollectableEntity.h">
+      <Filter>Файлы заголовков\GC</Filter>
+    </ClInclude>
+    <ClInclude Include="GCItem.h">
+      <Filter>Файлы заголовков\GC</Filter>
+    </ClInclude>
+    <ClInclude Include="JobQueue.h">
+      <Filter>Файлы заголовков\vitalStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseException.h">
+      <Filter>Файлы заголовков\exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeError.h">
+      <Filter>Файлы заголовков\exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="SyntaxError.h">
+      <Filter>Файлы заголовков\exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="ReferenceError.h">
+      <Filter>Файлы заголовков\exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="EventLoop.h">
+      <Filter>Файлы заголовков\eventloop</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Program.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeoutItem.h">
+      <Filter>Файлы заголовков\eventloop</Filter>
+    </ClInclude>
+    <ClInclude Include="HiddenProperties.h">
+      <Filter>Файлы заголовков\vitalStructures</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\..\..\..\Program Files (x86)\libuv\libuv.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="vs-runtime.rc">
+      <Filter>Файлы ресурсов</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

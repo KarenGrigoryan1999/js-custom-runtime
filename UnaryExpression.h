@@ -14,6 +14,7 @@ class UnaryExpression : public Expression
 public:
 	UnaryExpression(token_t op, Expression* exp1);
 	BaseValue* eval() override;
+	const char* plain_name = "UnaryExpression";
 private:
 	token_t op;
 	Expression* exp1;

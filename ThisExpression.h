@@ -13,6 +13,7 @@ class ThisExpression : public Expression
 public:
 	ThisExpression();
 	BaseValue* eval() override;
+	const char* plain_name = "ThisExpression";
 };
 
 #endif

@@ -24,6 +24,10 @@ bool TDZValue::get_as_boolean() {
 	return false;
 }
 
+int TDZValue::get_entity_type() {
+	return 4;
+}
+
 void TDZValue::base_tdz_get_value() {
 	throw string("Uncaught ReferenceError: Cannot access variable before initialization");
 }

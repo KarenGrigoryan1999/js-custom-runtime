@@ -13,6 +13,7 @@ class UndefinedExpression : public Expression
 public:
 	UndefinedExpression();
 	BaseValue* eval() override;
+	const char* plain_name = "UndefinedExpression";
 };
 
 #endif

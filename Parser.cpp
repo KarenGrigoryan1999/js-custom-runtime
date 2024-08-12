@@ -12,8 +12,9 @@
 #include "UndefinedExpression.h"
 #include "VariableStatement.h"
 #include "ForStatement.h"
+#include "WhileStatement.h"
 #include "IfStatement.h"
-#include "KusStatement.h"
+#include "TypeofExpression.h"
 #include "StringExpression.h"
 #include "BooleanExpression.h"
 #include "BlockStatement.h"
@@ -91,16 +92,14 @@ Node* Parser::evaluate_statement() {
 }
 
 Node* Parser::kus_statement() {
-	if (this->match(KUS)) {
-		Expression* result = this->evaluate_expression();
-		return new KusStatement(result);
-	}
 	if (this->match(IF_STATEMENT))
 		return this->if_else_statement();
 	if (this->match(RETURN))
 		return new ReturnExpression(this->evaluate_expression());
 	else if (this->match(FOR_STATEMENT))
 		return this->for_statement();
+	else if (this->match(WHILE_STATEMENT))
+		return this->while_statement();
 	else this->variable_statement();
 }
 
@@ -147,7 +146,9 @@ Node* Parser::variable_statement() {
 
 		return func;
 	}
-	else if (this->get(0)->type == ONE_WORD && this->get(1)->type == EQUAL) {
+	else if (this->get(1)->type == EQUAL) {
+		if (this->get(0)->type != ONE_WORD)
+			throw Errors::throw_error(ExceptionTypes::SyntaxError, "left-hand side in assignment");
 		string var_name = this->get(0)->value;
 		this->match(ONE_WORD);
 		this->match(EQUAL);
@@ -181,8 +182,25 @@ Node* Parser::for_statement() {
 	return new ForStatement(from, to, action, iterated_act);
 }
 
+Node* Parser::while_statement() {
+	this->match(L_BRACKET);
+	Node* condition = this->evaluate_statement();
+	this->match(R_BRACKET);
+	Node* iterated_act = this->evaluate_statement();
+
+	return new WhileStatement(condition, iterated_act);
+}
+
 Expression* Parser::evaluate_expression() {
 	return this->object_expression();
+}
+
+Expression* Parser::typeof_expression() {
+	if (this->match(TYPEOF)) {
+		Expression* result = this->unary();
+		return new TypeofExpression(result);
+	} else
+	return this->unary();
 }
 
 Expression* Parser::object_expression() {
@@ -363,9 +381,12 @@ Expression* Parser::method_expression(Expression* exp, Expression* obj_exp) {
 
 Expression* Parser::increment_expression() {
 	string token_type = this->get(0)->value;
-	Expression* result = this->unary();
-	if (this->match(INCREMENT) || this->match(DECREMENT)) {
+	Expression* result = this->typeof_expression();
+	if (this->match(INCREMENT)) {
 		return new IncrementExpression('r', INCREMENT, result, token_type, Parser::current_block);
+	}
+	if (this->match(DECREMENT)) {
+		return new IncrementExpression('r', DECREMENT, result, token_type, Parser::current_block);
 	}
 
 	return result;
@@ -389,7 +410,8 @@ Expression* Parser::primary() {
 	Token* current = this->get(0);
 	if (this->match(NUMBER)) {
 		NumberExpression* exp = new NumberExpression(current->value);
-		return exp;
+		if (this->get(0)->type != DOT_OP) return exp;
+		else return this->get_property_from_object(exp);
 	}
 	if (current->type == FUNCTION && this->get(1)->type == L_BRACKET) {
 		this->match(FUNCTION);
@@ -421,7 +443,8 @@ Expression* Parser::primary() {
 		return func;
 	}
 	if (this->match(NAN_EXPRESSION)) {
-		return new NanExpression();
+		if (this->get(0)->type != DOT_OP) return new NanExpression();
+		else return this->get_property_from_object(new NanExpression());
 	}
 	if (this->match(THIS_KEYWORD)) {
 		Expression* exp = new ThisExpression();
@@ -431,14 +454,17 @@ Expression* Parser::primary() {
 			return this->get_property_from_object(exp);
 	}
 	if (this->match(UNDEFINED_EXPRESSION)) {
-		return new UndefinedExpression();
+		if (this->get(0)->type != DOT_OP) return new UndefinedExpression();
+		else return this->get_property_from_object(new UndefinedExpression());
 	}
 	if (this->match(NULL_EXPRESSION)) {
-		return new NullExpression();
+		if (this->get(0)->type != DOT_OP) return new NullExpression();
+		else return this->get_property_from_object(new NullExpression());
 	}
 	if (this->match(PLAIN_TEXT)) {
 		StringExpression* exp = new StringExpression(current->value);
-		return exp;
+		if (this->get(0)->type != DOT_OP) return exp;
+		else return this->get_property_from_object(exp);
 	}
 	if (current->type == ONE_WORD && this->get(1)->type == L_BRACKET) {
 		return this->function_expression();

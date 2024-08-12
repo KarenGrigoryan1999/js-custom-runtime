@@ -15,8 +15,8 @@ public:
 		BaseValue* value;
 		bool is_const;
 	};
-	map<string, var_t> local_var_record;
-	static map<string, var_t> var_record;
+	map<string, var_t> identifiers;
+	static map<string, var_t> global_identifiers;
 	BaseValue* get_local(string name);
 	static BaseValue* get(string name);
 	void set_local(string name, BaseValue* data, bool is_const);

@@ -1,5 +1,5 @@
-#ifndef STRING_TYPE_H
-#define STRING_TYPE_H
+#ifndef TDZ_TYPE_H
+#define TDZ_TYPE_H
 
 #include "string"
 #include "BaseValue.h"
@@ -7,7 +7,7 @@
 
 using namespace std;
 
-class TDZValue : public virtual BaseValue
+class TDZValue : public BaseValue
 {
 public:
 	TDZValue() : BaseValue{ "", TDZ} {};
@@ -16,6 +16,7 @@ public:
 	string get_as_string();
 	double get_as_number();
 	bool get_as_boolean();
+	int get_entity_type() override;
 private:
 	void base_tdz_get_value();
 };

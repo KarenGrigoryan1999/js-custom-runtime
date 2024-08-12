@@ -33,12 +33,14 @@ public:
 	Node* variable_statement();
 	Node* if_else_statement();
 	Node* for_statement();
+	Node* while_statement();
 	Node* block_statement();
 	FunctionBodyStatement* func_body_statement();
 	Expression* evaluate_expression();
 	Expression* object_expression();
 	Expression* unary();
 	Expression* primary();
+	Expression* typeof_expression();
 	Expression* method_expression(Expression* exp, Expression* obj_exp);
 	Expression* increment_expression();
 	Expression* new_expression();

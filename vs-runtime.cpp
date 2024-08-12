@@ -1,11 +1,18 @@
 ﻿// vs-runtime.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
 //
-
 #include <iostream>
 #include <vector>
 #include <fstream>
 #include "Lexer.h"
 #include "Parser.h"
+#include "GarbigeCollector.h"
+#include <uv.h>
+#include "JobQueue.h"
+#include "BaseException.h"
+#include "EventLoop.h"
+#include "Program.h"
+
+#define BLUE_TEXT "\033[34m"
 
 using namespace std;
 
@@ -24,6 +31,7 @@ int main()
 
     string code;
     string line;
+
     while (getline(file, line)) {
         code += line + '\n';
     }
@@ -35,10 +43,17 @@ int main()
         vector<Token>* list = LexicalAnalizer->tokenize();
         Parser* ASTGenerator = new Parser(list);
         Node* program = ASTGenerator->parse();
-        program->eval();
+
+        cout << BLUE_TEXT << "My custom fuc**n js interpreter" << endl << endl;
+
+        EventLoop::SetupEventLoop();
+
+        Program::Run(program);
+
+        EventLoop::Run();
     }
-    catch (string msg) {
-        cout << msg;
+    catch (BaseException* msg) {
+        cout << msg->GetMsg();
     }
 }
 

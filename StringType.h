@@ -10,7 +10,7 @@ using namespace std;
 class StringType : public virtual BaseValue
 {
 public:
-	StringType(string data) : BaseValue{ data, STRING_TYPE } {};
+	StringType(string data) : BaseValue(data, STRING_TYPE) {};
 };
 
 #endif

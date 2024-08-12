@@ -3,6 +3,8 @@
 #include "Variables.h"
 #include "ContextStack.h"
 #include "TDZValue.h"
+#include "ReferenceError.h"
+#include "Errors.h"
 
 VariableStatement::VariableStatement(string name, Environment* block, Expression* exp, bool is_const, bool is_declaration) {
 	this->name = name;
@@ -18,11 +20,11 @@ VariableStatement::VariableStatement(string name, Environment* block, Expression
 			try {
 				BaseValue* val = this->block->records->get_local(name);
 				was_declared = true;
-			} catch(string e) {}
+			} catch(BaseException* e) {}
 		}
 
 		if (was_declared) {
-			throw string("Uncaught SyntaxError: Identifier ") + name + string(" has already been declared");
+			throw Errors::throw_error(ExceptionTypes::SyntaxError, "Identifier " + name + string(" has already been declared"));
 		}
 	}
 	if (this->block == NULL)
@@ -38,7 +40,7 @@ BaseValue* VariableStatement::eval() {
 			try {
 				block->records->get_local(this->name);
 			}
-			catch (string error_message) {
+			catch (BaseException* error_message) {
 				block->records->set_local(this->name, evaluated_data, this->is_const);
 				return evaluated_data;
 			}

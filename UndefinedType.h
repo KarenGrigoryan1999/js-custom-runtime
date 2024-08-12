@@ -7,10 +7,11 @@
 
 using namespace std;
 
-class UndefinedType : public virtual BaseValue
+class UndefinedType : public BaseValue
 {
 public:
 	UndefinedType() : BaseValue{ "", UNDEFINED_TYPE } {};
+	int get_entity_type() override;
 };
 
 #endif

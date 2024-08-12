@@ -17,6 +17,7 @@ public:
 	ReturnExpression();
 	BaseValue* eval() override;
 	BaseValue* get_result();
+	const char* plain_name = "ReturnExpression";
 protected:
 	Expression* exp;
 	BaseValue* result;

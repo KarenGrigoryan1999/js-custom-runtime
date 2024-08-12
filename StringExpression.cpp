@@ -1,6 +1,7 @@
 #include "StringExpression.h"
 #include "string"
 #include "Token.h"
+#include "StringType.h"
 
 using namespace std;
 
@@ -9,5 +10,5 @@ StringExpression::StringExpression(string value) {
 }
 
 BaseValue* StringExpression::eval() {
-	return new BaseValue(this->value, STRING_TYPE);
+	return new StringType(this->value);
 }

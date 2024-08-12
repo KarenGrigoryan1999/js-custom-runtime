@@ -15,11 +15,15 @@ BaseValue* VariableExpression::eval() {
 	if (this->block != NULL) {
 		Environment* current = this->block;
 		
-		while (current != NULL && current->records != NULL) {
+		while (current != NULL) {
+			if (current->records == NULL) {
+				current = current->outer;
+				continue;
+			}
 			try {
 				return current->records->get_local(name);
 			}
-			catch (string error_message) {
+			catch (BaseException* error_message) {
 				current = current->outer;
 			}
 		}
