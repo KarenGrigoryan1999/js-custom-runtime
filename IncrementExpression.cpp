@@ -44,7 +44,7 @@ BaseValue* IncrementExpression::eval() {
 					current->records->get_local(var_name);
 					break;
 				}
-				catch (string error_message) {
+				catch (BaseException* error_message) {
 					current = current->outer;
 				}
 			}
@@ -54,7 +54,7 @@ BaseValue* IncrementExpression::eval() {
 					Variables::set(var_name, res, false);
 					return this->op == 'l' ? res : operand;
 				}
-				catch (const char* error_message) {
+				catch (BaseException* error_message) {
 					block->records->set_local(var_name, res, false);
 					return this->op == 'l' ? res : operand;
 				}
@@ -68,7 +68,7 @@ BaseValue* IncrementExpression::eval() {
 				current->records->set_local(var_name, res, false);
 		}
 	}
-	catch (string err) {
+	catch (BaseException* err) {
 		throw Errors::throw_error(ExceptionTypes::SyntaxError, string("Invalid left-hand side expression in ") + (this->op == 'r' ? "postfix" : "prefix") + " operation");
 	}
 

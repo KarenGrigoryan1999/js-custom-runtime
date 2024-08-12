@@ -9,6 +9,7 @@
 #include "Environment.h"
 #include "ContextStack.h"
 #include "ExecutionContext.h"
+#include "ReferenceError.h"
 
 using namespace std;
 
@@ -37,15 +38,19 @@ BaseValue* CallExpression::eval() {
 	AnonumousFuncExpression* func_ref;
 	if (!this->func_exp) {
 		BaseValue* func = NULL;
-		if (this->block != NULL && this->block->records != NULL) {
+		if (this->block != NULL) {
 			Environment* current = this->block;
 
 			while (current != NULL) {
+				if (current->records == NULL) {
+					current = current->outer;
+					continue;
+				}
 				try {
 					func = current->records->get_local(this->name);
 					break;
 				}
-				catch (string error_message) {
+				catch (BaseException* error_message) {
 					current = current->outer;
 				}
 			}
@@ -54,7 +59,7 @@ BaseValue* CallExpression::eval() {
 		try {
 			if (func == NULL) func = Variables::get(this->name);
 		}
-		catch (string msg) {
+		catch (BaseException* msg) {
 			return Functions::get(this->name, &this->args);
 		}
 
@@ -76,8 +81,12 @@ BaseValue* CallExpression::eval() {
 
 	 vector<string>* arg_list = func_ref->get_arg_list();
 
-	for (int i = 0; i < arg_list->size(); i++) {
-		func_env.records->set_local(arg_list->at(i), this->args.at(i)->eval(), false);
+	int i;
+	for (i = 0; i < args.size(); i++) {
+			func_env.records->set_local(arg_list->at(i), this->args.at(i)->eval(), false);
+	}
+	for (i; i < arg_list->size(); i++) {
+		func_env.records->set_local(arg_list->at(i), new UndefinedType(), false);
 	}
 
 	ContextStack::push(exec_context);

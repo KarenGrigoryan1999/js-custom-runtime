@@ -13,6 +13,7 @@ class IfStatement : public Statement
 public:
 	IfStatement(Expression* condition, Node* ifStatement, Node* elseStatement);
 	BaseValue* eval() override;
+	const char* plain_name = "IfStatement";
 private:
 	Expression* condition;
 	Node* ifStatement;

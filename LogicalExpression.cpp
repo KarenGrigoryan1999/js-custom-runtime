@@ -7,9 +7,6 @@
 
 using namespace std;
 
-BoolType* TrueVariant = new BoolType(true);
-BoolType* FalseVariant = new BoolType(false);
-
 LogicalExpression::LogicalExpression(token_t op, Expression* exp1, Expression* exp2) {
 	this->op = op;
 	this->exp1 = exp1;
@@ -19,6 +16,9 @@ LogicalExpression::LogicalExpression(token_t op, Expression* exp1, Expression* e
 BaseValue* LogicalExpression::eval() {
 	BaseValue* operand1 = exp1->eval();
 	BaseValue* operand2 = exp2->eval();
+
+	BoolType* TrueVariant = new BoolType(true);
+	BoolType* FalseVariant = new BoolType(false);
 
 	if (this->op == LOGICAL_AND_EXPRESSION) {
 		if (operand1->get_as_boolean() == false) {

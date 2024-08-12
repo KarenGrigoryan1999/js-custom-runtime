@@ -11,6 +11,7 @@ class NewExpression : public Expression
 public:
 	NewExpression(Expression* exp);
 	BaseValue* eval() override;
+	const char* plain_name = "NewExpression";
 private:
 	Expression* exp;
 };

@@ -20,6 +20,9 @@ public:
 	FunctionBodyStatement* getBody();
 	BaseValue* eval() override;
 	vector<string>* get_arg_list();
+	Environment* getBlock();
+	void setBlock(Environment* env);
+	const char* plain_name = "AnonumousFuncExpression";
 private:
 	bool is_struct;
 	string name;

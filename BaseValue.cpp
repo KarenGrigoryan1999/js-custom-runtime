@@ -2,26 +2,55 @@
 #include <stdexcept>
 #include "ObjectExpression.h"
 #include "NativeCodeRealisation.h"
+#include "GarbigeCollector.h"
 
 BaseValue::BaseValue(string data, variable_t type) {
 	this->data = data;
 	this->type = type;
+	this->registerInHeap();
 }
 
 BaseValue::BaseValue(ObjectExpression* data) {
 	this->data = "";
 	this->ref = data;
 	this->type = FUNCTION_TYPE;
+	this->registerInHeap();
 }
 
 BaseValue::BaseValue(ObjectExpression* data, variable_t type) {
 	this->data = "";
 	this->ref = data;
 	this->type = type;
+	this->registerInHeap();
 }
 
 variable_t BaseValue::get_type() {
 	return this->type;
+}
+
+int BaseValue::get_data_size() {
+	return sizeof(this->data);
+}
+
+int BaseValue::get_entity_type() {
+	if (this->get_type() == TDZ) {
+		return 2;
+	}
+
+	return 1;
+}
+
+void BaseValue::trace() {
+	GarbigeCollector::findAndMark(this);
+	if (this->ref) {
+		this->ref->trace();
+		vector<object_property>* values = this->ref->get_obj_properties();
+		for (auto it = values->begin(); it != values->end(); ++it) {
+			if (it->value) {
+				it->value->trace();
+			}
+		}
+	}
 }
 
 ObjectExpression* BaseValue::get_ref() {

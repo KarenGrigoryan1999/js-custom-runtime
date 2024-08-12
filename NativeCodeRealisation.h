@@ -16,6 +16,7 @@ class NativeCodeRealisation : public ReturnExpression
 public:
 	NativeCodeRealisation(native_method_type type);
 	BaseValue* eval() override;
+	const char* plain_name = "NativeCodeRealisation";
 private:
 	Expression* exp;
 	native_method_type type;

@@ -17,6 +17,7 @@ public:
 	void add(Node* statement);
 	Environment* env;
 	BaseValue* eval() override;
+	const char* plain_name = "BlockBaseStatement";
 private:
 	vector<Node*> statementList;
 };

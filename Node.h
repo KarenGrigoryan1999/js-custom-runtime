@@ -10,6 +10,8 @@ class Node
 public:
 	Node();
 	virtual BaseValue* eval();
+
+	char* plain_name;
 };
 
 #endif

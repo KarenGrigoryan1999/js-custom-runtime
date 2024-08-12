@@ -11,6 +11,10 @@ void FunctionBodyStatement::add(Node* statement) {
 	this->statements.push_back(statement);
 }
 
+vector<Node*>* FunctionBodyStatement::GetStatementList() {
+	return &this->statements;
+}
+
 void FunctionBodyStatement::refresh_env() {
 	if (ContextStack::size() != 0) {
 		this->env->records = ContextStack::top()->get_environment_record()->records;
@@ -22,7 +26,7 @@ void FunctionBodyStatement::refresh_env() {
 
 BaseValue* FunctionBodyStatement::eval() {
 	for (int i = 0; i < this->statements.size(); i++) {
-		this->statements[i]->eval();
+		this->statements.at(i)->eval();
 	}
 
 	this->env->records = new Variables();

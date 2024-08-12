@@ -5,6 +5,8 @@
 
 using namespace std;
 
-class ObjectBase : public Expression {};
+class ObjectBase : public Expression {
+	const char* plain_name = "ObjectBase";
+};
 
 #endif

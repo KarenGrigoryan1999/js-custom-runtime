@@ -19,6 +19,14 @@ AnonumousFuncExpression::AnonumousFuncExpression(Environment* block) {
 	});//Сразу задаем prototype, равный пустому объекту
 }
 
+Environment* AnonumousFuncExpression::getBlock() {
+	return this->block;
+}
+
+void AnonumousFuncExpression::setBlock(Environment* env) {
+	this->block = env;
+}
+
 void AnonumousFuncExpression::add(string arg) {
 	this->args.push_back(arg);
 }

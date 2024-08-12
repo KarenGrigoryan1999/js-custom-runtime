@@ -1,13 +1,5 @@
 #include "ObjectExpression.h"
-#include "NullType.h"
-#include "UndefinedType.h"
-#include "Token.h"
-#include "NumberType.h"
-#include "BoolType.h"
-#include <iostream>
-#include "ObjectProperty.h"
 #include "CallExpression.h"
-#include "EmptyExpression.h"
 
 using namespace std;
 
@@ -29,9 +21,38 @@ void ObjectExpression::add_property(string property_name, Expression* exp) {
 	this->key_names.push_back(property_name);
 }
 
+BaseValue* ObjectExpression::set_hidden_property(HiddenProperties property, Expression* value) {
+	switch (property)
+	{
+	case HiddenProperties::PrimitiveValue:
+		return this->primitive_value = value->eval();
+	default:
+		return this->primitive_value = value->eval();
+	}
+}
+
+BaseValue* ObjectExpression::get_hidden_property(HiddenProperties property) {
+	switch (property)
+	{
+	case HiddenProperties::PrimitiveValue:
+		return this->primitive_value;
+		break;
+	default:
+		return this->primitive_value;
+	}
+}
+
 void ObjectExpression::add_property(string property_name, object_property property) {
 	this->properties.push_back(property);
 	this->key_names.push_back(property_name);
+}
+
+int ObjectExpression::get_data_size() {
+	return sizeof(this->key_names) + sizeof(this->properties);
+}
+
+void ObjectExpression::trace() {
+	GarbigeCollector::findAndMark(this);
 }
 
 vector<string>* ObjectExpression::get_keys() {
@@ -96,6 +117,7 @@ BaseValue* ObjectExpression::set_property_with_descriptors(string name, object_p
 
 BaseValue* ObjectExpression::set_property_value(string name, BaseValue* val) {
 	bool is_exist = false;
+
 	for (int i = 0; i < this->key_names.size(); i++) {
 		if (name == this->key_names.at(i)) {
 			object_property* property = &this->properties.at(i);
@@ -127,6 +149,14 @@ BaseValue* ObjectExpression::set_property_value(string name, Expression* exp) {
 	return this->set_property_value(name, val);
 }
 
+vector<object_property>* ObjectExpression::get_obj_properties() {
+	return &this->properties;
+}
+
+int ObjectExpression::get_entity_type() {
+	return 3;
+}
+
 BaseValue* ObjectExpression::eval() {
 	return new BaseValue(this, OBJECT_TYPE);
 }
@@ -135,9 +165,9 @@ void ObjectExpression::set_object_proto(bool has_null_proto) {
 	//Если has_null_proto = true, то мы выставляем __proto__ как null
 	this->properties.push_back({
 	has_null_proto ? new NullType() : Variables::get("Object")->get_ref()->get_property_value("prototype"),
-	PropertyDescriptorState::TURNED_OFF,
-	PropertyDescriptorState::TURNED_OFF,
-	PropertyDescriptorState::TURNED_OFF
+	PropertyDescriptorState::TURNED_ON,
+	PropertyDescriptorState::TURNED_ON,
+	PropertyDescriptorState::TURNED_ON
 		});
 	this->key_names.push_back("__proto__");
 }

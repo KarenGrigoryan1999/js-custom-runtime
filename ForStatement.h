@@ -13,6 +13,7 @@ class ForStatement : public Statement
 public:
 	ForStatement(Node* from, Node* to, Node* action, Node* iterated_action);
 	BaseValue* eval() override;
+	const char* plain_name = "ForStatement";
 private:
 	Node* from;
 	Node* to;

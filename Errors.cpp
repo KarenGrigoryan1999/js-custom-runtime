@@ -1,19 +1,15 @@
 #include "Errors.h"
 
-string Errors::throw_error(ExceptionTypes type, string text) {
+BaseException* Errors::throw_error(ExceptionTypes type, string text) {
 	switch (type)
 	{
 	case ExceptionTypes::ReferenceError:
-		return "Uncaught ReferenceError: " + text;
-		break;
+		return new ReferenceError(string("Uncaught ReferenceError: ") + text);
 	case ExceptionTypes::SyntaxError:
-		return "Uncaught SyntaxError: " + text;
-		break;
+		return new BaseException(string("Uncaught SyntaxError: ") + text);
 	case ExceptionTypes::TypeError:
-		return "Uncaught TypeError: " + text;
-		break;
+		return new BaseException(string("Uncaught TypeError: ") + text);
 	default:
-		return "UnknownError";
-		break;
+		return new BaseException("UnknownError");
 	}
 }

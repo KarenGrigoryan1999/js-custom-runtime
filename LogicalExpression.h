@@ -13,6 +13,7 @@ class LogicalExpression : public Expression
 public:
 	LogicalExpression(token_t op, Expression* exp1, Expression* exp2);
 	BaseValue* eval() override;
+	const char* plain_name = "LogicalExpression";
 private:
 	token_t op;
 	Expression* exp1;

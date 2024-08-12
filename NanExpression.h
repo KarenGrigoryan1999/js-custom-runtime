@@ -13,6 +13,7 @@ class NanExpression : public Expression
 public:
 	NanExpression();
 	BaseValue* eval() override;
+	const char* plain_name = "NanExpression";
 };
 
 #endif

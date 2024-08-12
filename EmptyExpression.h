@@ -11,6 +11,7 @@ class EmptyExpression : public Expression
 public:
 	EmptyExpression(BaseValue* value);
 	BaseValue* eval() override;
+	const char* plain_name = "EmptyExpression";
 private:
 	BaseValue* value;
 };

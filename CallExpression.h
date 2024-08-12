@@ -19,6 +19,7 @@ public:
 	void set_this_object(Expression* obj_expression);
 	BaseValue* eval() override;
 	void add(Expression* exp);
+	const char* plain_name = "CallExpression";
 private:
 	string name;
 	Expression* func_exp;

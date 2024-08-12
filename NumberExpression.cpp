@@ -1,6 +1,6 @@
 #include "NumberExpression.h"
 #include "string"
-#include "NanType.h"
+#include "NumberType.h"
 #include "Token.h"
 
 using namespace std;

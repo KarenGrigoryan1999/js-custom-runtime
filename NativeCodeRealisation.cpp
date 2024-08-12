@@ -6,6 +6,7 @@
 #include "DotExpression.h"
 #include "ThisExpression.h"
 #include "UndefinedType.h"
+#include "NumberType.h"
 #include "Environment.h"
 #include "ContextStack.h"
 #include "ObjectExpression.h"
@@ -56,7 +57,7 @@ BaseValue* NativeCodeRealisation::eval() {
 		else prop.set = NULL;
 
 		if (
-			(get != NULL || set != NULL) &&
+			(get->get_type() != UNDEFINED_TYPE || set->get_type() != UNDEFINED_TYPE) &&
 			(prop.writable != PropertyDescriptorState::UNSET || prop.enumerable != PropertyDescriptorState::UNSET || prop.configurable != PropertyDescriptorState::UNSET)
 		) {
 			throw Errors::throw_error(ExceptionTypes::TypeError, "Invalid property descriptor. Cannot both specify accessors and a value or writable attribute, #<Object>");
@@ -66,20 +67,27 @@ BaseValue* NativeCodeRealisation::eval() {
 
 		return new UndefinedType();
 	}
-	string val = (new DotExpression(new ThisExpression(), "[[PrimitiveValue]]"))->eval()->get_as_string();
+	string val = (new DotExpression(new ThisExpression(), HiddenProperties::PrimitiveValue))->eval()->get_as_string();
 	if (this->type == STRING_TO_LOWER_CASE) {
 		for (char& c : val) {
 			c = tolower(c);
 		}
+
+		this->result = new StringType(val);
 	}
 
 	if (this->type == STRING_TO_UPPER_CASE) {
 		for (char& c : val) {
 			c = toupper(c);
 		}
+
+		this->result = new StringType(val);
+	}
+
+	if (this->type == STRING_LENGTH) {
+		this->result = new NumberType(val.length());
 	}
 	
-	this->result = new StringType(val);
 	throw this;
 }
 

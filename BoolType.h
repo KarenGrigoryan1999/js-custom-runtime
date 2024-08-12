@@ -7,10 +7,11 @@
 
 using namespace std;
 
-class BoolType : public virtual BaseValue
+class BoolType : public BaseValue
 {
 public:
 	BoolType(bool data) : BaseValue{ data ? "1" : "", BOOL_TYPE} {};
+	int get_entity_type() override;
 };
 
 #endif

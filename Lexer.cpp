@@ -275,6 +275,11 @@ void Lexer::tokenize_word(token_t type) {
 		if (symbol == '(') this->base_tokenize(FOR_STATEMENT);
 		else throw "unexpected token";
 	}
+	else if (this->tokenize_temp == "while") {
+		while (symbol == ' ') this->next();
+		if (symbol == '(') this->base_tokenize(WHILE_STATEMENT);
+		else throw "unexpected token";
+	}
 	else if (this->tokenize_temp == "else") {
 		this->tokenize_math_operator(ELSE_STATEMENT);
 	}
@@ -285,10 +290,10 @@ void Lexer::tokenize_word(token_t type) {
 		this->base_tokenize(FUNCTION);
 	}
 	else if (this->tokenize_temp == "undefined") {
-		this->tokenize_math_operator(UNDEFINED_EXPRESSION);
+		this->base_tokenize(UNDEFINED_EXPRESSION);
 	}
 	else if (this->tokenize_temp == "null") {
-		this->tokenize_math_operator(NULL_EXPRESSION);
+		this->base_tokenize(NULL_EXPRESSION);
 	}
 	else if (this->tokenize_temp == "this") {
 		this->base_tokenize(THIS_KEYWORD);
@@ -299,8 +304,8 @@ void Lexer::tokenize_word(token_t type) {
 	else if (this->tokenize_temp == "return") {
 		this->tokenize_math_operator(RETURN);
 	}
-	else if (this->tokenize_temp == "kus") {
-		this->tokenize_math_operator(KUS);
+	else if (this->tokenize_temp == "typeof") {
+		this->tokenize_math_operator(TYPEOF);
 	}
 	else if (this->tokenize_temp == "true" || this->tokenize_temp == "false") {
 		this->base_tokenize(BOOLEAN_ELEMENT);

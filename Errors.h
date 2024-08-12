@@ -3,13 +3,15 @@
 
 #include "string";
 #include "exceptionTypes.h"
+#include "BaseException.h"
+#include "ReferenceError.h"
 
 using namespace std;
 
 class Errors
 {
 public:
-	static string throw_error(ExceptionTypes type, string text);
+	static BaseException* throw_error(ExceptionTypes type, string text);
 };
 
 #endif

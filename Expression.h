@@ -9,6 +9,8 @@ using namespace std;
 
 class Expression: public Node
 {
+public:
+	const char* plain_name = "Expression";
 };
 
 #endif

@@ -10,6 +10,7 @@ class BlockStatement : public BlockBaseStatement
 {
 public:
 	BlockStatement(Environment* statement) : BlockBaseStatement(statement) {};
+	const char* plain_name = "BlockStatement";
 };
 
 #endif

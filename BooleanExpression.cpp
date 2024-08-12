@@ -9,6 +9,6 @@ BooleanExpression::BooleanExpression(string value) {
 }
 
 BaseValue* BooleanExpression::eval() {
-	if(this->value == "true") return new BaseValue("1", BOOL_TYPE);
-	return new BaseValue("", BOOL_TYPE);
+	if(this->value == "true") return new BoolType(true);
+	return new BoolType(false);
 }

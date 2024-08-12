@@ -13,6 +13,7 @@ class BinaryExpression: public Expression
 public:
 	BinaryExpression(token_t op, Expression* exp1, Expression* exp2);
 	BaseValue* eval() override;
+	const char* plain_name = "AnonumousFuncExpression";
 private:
 	token_t op;
 	Expression* exp1;

@@ -17,6 +17,7 @@ public:
 	FunctionDeclaration(string name, Environment* block, bool is_const);
 	BaseValue* eval() override;
 	AnonumousFuncExpression* function;
+	const char* plain_name = "FunctionDeclaration";
 private:
 	bool is_const;
 	string name;

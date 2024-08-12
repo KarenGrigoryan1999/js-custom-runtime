@@ -20,6 +20,7 @@ public:
 	static ExecutionContext* top();
 	static void pop();
 	static int size();
+	static ExecutionContext* get_stack_element(int pos);
 };
 
 #endif

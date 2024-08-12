@@ -15,6 +15,7 @@ class IncrementExpression : public Expression
 public:
 	IncrementExpression(char op, token_t op1, Expression* exp1, string var_name, Environment* block);
 	BaseValue* eval() override;
+	const char* plain_name = "IncrementExpression";
 private:
 	char op;
 	token_t op1;

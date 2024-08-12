@@ -7,10 +7,11 @@
 
 using namespace std;
 
-class NullType : public virtual BaseValue
+class NullType : public BaseValue
 {
 public:
 	NullType() : BaseValue{ "", NULL_TYPE } {};
+	int get_entity_type() override;
 };
 
 #endif

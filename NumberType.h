@@ -7,10 +7,11 @@
 
 using namespace std;
 
-class NumberType: public virtual BaseValue
+class NumberType: public BaseValue
 {
 public:
 	NumberType(double data) : BaseValue{ to_string(data), NUMBER_TYPE } {};
+	int get_entity_type() override;
 };
 
 #endif

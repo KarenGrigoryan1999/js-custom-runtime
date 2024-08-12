@@ -11,6 +11,7 @@ class NullExpression : public Expression
 public:
 	NullExpression();
 	BaseValue* eval() override;
+	const char* plain_name = "NullExpression";
 };
 
 #endif

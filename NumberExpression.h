@@ -13,6 +13,7 @@ class NumberExpression: public Expression
 public:
 	NumberExpression(string value);
 	BaseValue* eval() override;
+	const char* plain_name = "NumberExpression";
 private:
 	string value;
 };
